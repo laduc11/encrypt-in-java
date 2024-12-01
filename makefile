@@ -1,41 +1,47 @@
-# Define directories
+# Directories
 SRC_DIR = src
-LIB_DIR = lib
 BIN_DIR = bin
+LIB_DIR = lib
 
-# Find all .java files in the src directory
-SRC_FILES := $(wildcard $(SRC_DIR)/*.java)
+# Classpath
+CP = $(LIB_DIR)/*
 
-# Output directory for compiled .class files
-CLASS_FILES := $(patsubst $(SRC_DIR)/%.java, $(BIN_DIR)/%.class, $(SRC_FILES))
+# Source files
+SOURCES = $(wildcard $(SRC_DIR)/*.java)
 
-# Classpath (include lib directory if there are jars)
-CLASSPATH := $(LIB_DIR)/*:$(BIN_DIR)
-
-# Main class to run
-MAIN_CLASS = App
+# Output files
+CLASSES = $(SOURCES:$(SRC_DIR)/%.java=$(BIN_DIR)/%.class)
 
 # Default target
 .PHONY: all
 all: build run
 
-# Build target
-build: $(CLASS_FILES)
+# Build the project
+.PHONY: build
+build:
+ifeq ($(OS),Windows_NT)
+	powershell -Command "if (!(Test-Path -Path 'bin')) { New-Item -ItemType Directory -Path 'bin' }"
+else
+	mkdir -p bin
+endif
+	javac -d $(BIN_DIR) -cp "$(CP)" $(SOURCES)
 
-# Create the bin directory if it doesn't exist
-$(BIN_DIR):
-	mkdir -p $(BIN_DIR)
-
-# Compile all .java files
-$(BIN_DIR)/%.class: $(SRC_DIR)/%.java | $(BIN_DIR)
-	javac -d $(BIN_DIR) -cp $(CLASSPATH) $<
-
-# Run the program
+# Run the project
 .PHONY: run
 run:
-	java -cp $(CLASSPATH) $(MAIN_CLASS)
+ifeq ($(OS),Windows_NT)
+	java -cp "$(BIN_DIR);$(CP)" App
+else
+	java -cp "$(BIN_DIR):$(CP)" App
+endif
 
-# Clean the bin directory
+# Clean the build directory
 .PHONY: clean
 clean:
-	del $(BIN_DIR)
+ifeq ($(OS),Windows_NT)
+	powershell -Command "Get-ChildItem -Path 'bin/*.class' | Remove-Item -Force"
+	powershell -Command "Get-ChildItem -Path 'data/ciphertext/*.des' | Remove-Item -Force"
+else
+	rm -f bin/*.class
+	rm -f data/ciphertext/*.des
+endif

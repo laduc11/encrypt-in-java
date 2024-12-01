@@ -20,6 +20,7 @@ public class App {
         System.out.print("Enter choosen algorithm: ");
         int padding_algo = scanner.nextInt();
         
+        EncryptFile encryptor = new EncryptFile();
         EncryptFile.encrypt(filename, mode, padding_algo);
 
         scanner.close();
