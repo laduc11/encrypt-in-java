@@ -50,11 +50,16 @@ public class EncryptFile {
 	
 	public static void encrypt(String filename, int mode, int padding_algo) {
 		System.out.printf("filename = %s\nMode: %d\nPadding algorithm: %d\n", filename, mode, padding_algo);
-		String basename = new File(filename).getName();
-		System.out.println(basename);
-		if (basename.contains(".")) {
-            basename = basename.substring(0, basename.lastIndexOf('.'));
-        }
+		String basename;
+		// Get basename without file extension
+		if (filename.contains(".")) {
+            basename = filename.substring(0, filename.lastIndexOf('.'));
+		} else {
+			basename = filename;
+		}
+		System.out.printf("basename: %s\n", basename);
+		System.out.println("End");
+
 
 		// try {
 		// 	File desFile = new File("data/ciphertext/encrypt_" + filename);
