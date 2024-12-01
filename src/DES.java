@@ -101,7 +101,6 @@ public class DES {
                 cis.close();
                 fis.close();
                 key_file.close();
-                System.out.println("Encrypt success");
             } catch (IOException err) {
                 System.out.println("Cannot open file!");
                 System.exit(-1);

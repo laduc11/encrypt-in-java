@@ -46,6 +46,7 @@ public class Lab5_1 {
                         
                         start_time = System.nanoTime();
                         des.decrypt();
+                        end_time = System.nanoTime();
                         elapsed_time = end_time - start_time;
                         System.out.println("Decryt time: " + (elapsed_time / 1000000.0) + " ms");
 
@@ -66,6 +67,7 @@ public class Lab5_1 {
             
             start_time = System.nanoTime();
             des.decrypt();
+            end_time = System.nanoTime();
             elapsed_time = end_time - start_time;
             System.out.println("Decryt time: " + (elapsed_time / 1000000.0) + " ms");
         }
