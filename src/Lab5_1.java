@@ -1,7 +1,7 @@
 import java.util.Scanner;
 import java.io.File;
 
-public class App {
+public class Lab5_1 {
     public static void main(String[] args) throws Exception {
         Scanner scanner = new Scanner(System.in);
         System.out.println("This is a program encrypt with DES algorithm");
@@ -56,8 +56,18 @@ public class App {
             }
         } else {
             DES des = new DES(plaintext, key, mode, padding_algo);
+            long start_time, end_time, elapsed_time;
+            
+            start_time = System.nanoTime();
             des.encrypt();
+            end_time = System.nanoTime();
+            elapsed_time = end_time - start_time;
+            System.out.println("Encryt time: " + (elapsed_time / 1000000.0) + " ms");
+            
+            start_time = System.nanoTime();
             des.decrypt();
+            elapsed_time = end_time - start_time;
+            System.out.println("Decryt time: " + (elapsed_time / 1000000.0) + " ms");
         }
 
         scanner.close();
