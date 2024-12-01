@@ -44,7 +44,7 @@ clean:
 ifeq ($(OS),Windows_NT)
 	powershell -Command "Get-ChildItem -Path 'bin/*.class' | Remove-Item -Force"
 	powershell -Command "Get-ChildItem -Path 'data/ciphertext/*.enc' | Remove-Item -Force"
-	powershell -Command "Get-ChildItem -Path 'data/deceoded/*.dec' | Remove-Item -Force"
+	powershell -Command "Get-ChildItem -Path 'data/decoded/*.dec' | Remove-Item -Force"
 else
 	rm -f bin/*.class
 	rm -f data/ciphertext/*.enc

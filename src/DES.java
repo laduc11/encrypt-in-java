@@ -5,6 +5,7 @@ import java.io.IOException;
 
 import javax.crypto.Cipher;
 import javax.crypto.CipherInputStream;
+import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
 public class DES {
@@ -12,11 +13,16 @@ public class DES {
     private String key_filename;
     private String output_filename;
     private String transformation;
+    private int mode;
+    private int padding_algo;
 
     public DES(String plaintext, String key_filename, int mode, int padding_algo, String output) {
         this.plaintext = plaintext;
         this.key_filename = key_filename;
         this.output_filename = output;
+        this.mode = mode;
+        this.padding_algo = padding_algo;
+
         // Get transformation
         this.transformation = "DES/";
         if (mode == Common.ECB) {
@@ -63,6 +69,10 @@ public class DES {
             try {
                 fis = new FileInputStream(path2file);
                 
+                // Define an Initialization Vector (IV)
+                byte[] iv = new byte[Common.DES_LENGTH];
+                IvParameterSpec ivSpec = new IvParameterSpec(iv);
+
                 // Create a Secret key
                 key_file = new FileInputStream("data/key/" + this.key_filename);
                 byte key[] = key_file.readNBytes(Common.DES_LENGTH);
@@ -70,10 +80,14 @@ public class DES {
 
                 // Create Cipher object
                 Cipher encrypt = Cipher.getInstance(this.transformation);
-                encrypt.init(Cipher.ENCRYPT_MODE, secretKey);
-
+                if (this.mode == Common.ECB) {
+                    encrypt.init(Cipher.ENCRYPT_MODE, secretKey);
+                } else if (this.mode == Common.CBC) {
+                    encrypt.init(Cipher.ENCRYPT_MODE, secretKey, ivSpec);
+                }
+                
                 cis = new CipherInputStream(fis, encrypt);
-
+                
                 // Write to the Encrypted file
                 fos = new FileOutputStream(desFile);
                 byte[] b = new byte[8];
@@ -96,7 +110,7 @@ public class DES {
             e.printStackTrace();
         }
     }
-
+    
     public void decrypt() {
         try {
             File desFile = new File("data/ciphertext/" + this.output_filename + ".enc");
@@ -105,20 +119,28 @@ public class DES {
             FileInputStream fis;
             FileOutputStream fos;
             CipherInputStream cis;
+            
+            // Define an Initialization Vector (IV)
+            byte[] iv = new byte[Common.DES_LENGTH];
+            IvParameterSpec ivSpec = new IvParameterSpec(iv);
 
             // Create a Secret key
             key_file = new FileInputStream("data/key/" + this.key_filename);
             byte key[] = key_file.readNBytes(Common.DES_LENGTH);
             SecretKeySpec secretKey = new SecretKeySpec(key, "DES");
-
+            
             // Create Cipher object
             Cipher decrypt = Cipher.getInstance(this.transformation);
-            decrypt.init(Cipher.DECRYPT_MODE, secretKey);
-
+            if (this.mode == Common.ECB) {
+                decrypt.init(Cipher.DECRYPT_MODE, secretKey);
+            } else if (this.mode == Common.CBC) {
+                decrypt.init(Cipher.DECRYPT_MODE, secretKey, ivSpec);
+            }
+            
             // Open the Encrypted file
             fis = new FileInputStream(desFile);
             cis = new CipherInputStream(fis, decrypt);
-
+            
             // Write to the Decrypted file
             fos = new FileOutputStream(desFileBis);
             byte[] b = new byte[8];
