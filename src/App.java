@@ -6,7 +6,10 @@ public class App {
         System.out.println("This is a program encrypt with DES algorithm");
 
         System.out.print("Enter filename contain plaintext: ");
-        String filename = scanner.nextLine();
+        String plaintext = scanner.nextLine();
+        
+        System.out.print("Enter filename contain key: ");
+        String key = scanner.nextLine();
 
         System.out.println("Modes of cryptographic operation");
         System.out.println("1. Electronic Code Block");
@@ -20,8 +23,9 @@ public class App {
         System.out.print("Enter choosen algorithm: ");
         int padding_algo = scanner.nextInt();
         
-        EncryptFile encryptor = new EncryptFile();
-        EncryptFile.encrypt(filename, mode, padding_algo);
+        DES des = new DES(plaintext, key, mode, padding_algo);
+        des.encrypt();
+        des.decrypt();
 
         scanner.close();
     }

@@ -6,6 +6,9 @@ LIB_DIR = lib
 # Classpath
 CP = $(LIB_DIR)/*
 
+# Target
+TARGET = App
+
 # Source files
 SOURCES = $(wildcard $(SRC_DIR)/*.java)
 
@@ -30,9 +33,9 @@ endif
 .PHONY: run
 run:
 ifeq ($(OS),Windows_NT)
-	java -cp "$(BIN_DIR);$(CP)" App
+	java -cp "$(BIN_DIR);$(CP)" $(TARGET)
 else
-	java -cp "$(BIN_DIR):$(CP)" App
+	java -cp "$(BIN_DIR):$(CP)" $(TARGET)
 endif
 
 # Clean the build directory
@@ -40,8 +43,10 @@ endif
 clean:
 ifeq ($(OS),Windows_NT)
 	powershell -Command "Get-ChildItem -Path 'bin/*.class' | Remove-Item -Force"
-	powershell -Command "Get-ChildItem -Path 'data/ciphertext/*.des' | Remove-Item -Force"
+	powershell -Command "Get-ChildItem -Path 'data/ciphertext/*.enc' | Remove-Item -Force"
+	powershell -Command "Get-ChildItem -Path 'data/deceoded/*.dec' | Remove-Item -Force"
 else
 	rm -f bin/*.class
-	rm -f data/ciphertext/*.des
+	rm -f data/ciphertext/*.enc
+	rm -f data/deceoded/*.dec
 endif
