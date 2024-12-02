@@ -33,9 +33,9 @@ public class DES {
             throw new ExceptionInInitializerError("Mode invalid");
         }
 
-        if (padding_algo == Common.PKCS5Padding) {
+        if (this.padding_algo == Common.PKCS5Padding) {
             transformation += "PKCS5Padding";
-        } else if (padding_algo == Common.NoPadding) {
+        } else if (this.padding_algo == Common.NoPadding) {
             transformation += "NoPadding";
         } else {
             throw new ExceptionInInitializerError("Padding algorithm invalid");
