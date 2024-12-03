@@ -4,7 +4,6 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.KeyFactory;
 import java.security.KeyPair;
@@ -18,6 +17,12 @@ import java.util.Scanner;
 import javax.crypto.Cipher;
 
 public class Lab5_2 {
+    public static final String CIPHER_PATH = "data/ciphertext/";
+    public static final String DECODE_PATH = "data/decoded/";
+    public static final String PLAINTEXT_PATH = "data/plaintext/";
+    public static final String KEY_PATH = "data/key/";
+    public static final String MODE_RSA = "RSA/ECB/PKCS1Padding";
+
     static private void processFile(Cipher ci,InputStream in,OutputStream out)
     throws javax.crypto.IllegalBlockSizeException,
            javax.crypto.BadPaddingException,
@@ -90,11 +95,11 @@ public class Lab5_2 {
         out2.close();
     }
     
-    static public void encryptRSA() throws Exception {
+    static public void encryptRSA(String mode) throws Exception {
         Scanner scanner = new  Scanner(System.in);
         System.out.println("This is a program encrypt with RSA algorithm.");
         System.out.println("Scanning file Lab05_2.key and Lab05_2.pub at directory ...");
-        String pvtFilename = "data/key/Lab5_2.key", pubFilename = "data/key/Lab5_2.pub";
+        String pvtFilename = KEY_PATH + "Lab5_2.key", pubFilename = KEY_PATH + "Lab5_2.pub";
         File    pvtFile = new File(pvtFilename),
                 pubFile = new File(pubFilename);
         PublicKey pub;
@@ -111,7 +116,7 @@ public class Lab5_2 {
         // pvt = getPrivateKey(pvtFilename);
 
         // Encrypt a file using a RSA key
-        Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
+        Cipher cipher = Cipher.getInstance(mode);
         cipher.init(Cipher.ENCRYPT_MODE, pub);
         // input file contain plaintext
         System.out.print("Enter filename of plaintext: ");
@@ -121,14 +126,14 @@ public class Lab5_2 {
         // write to output file
         System.out.print("Enter filename of ciphertext: ");
         String ciphertext = scanner.nextLine();
-        FileOutputStream out = new FileOutputStream("data/ciphertext/" + ciphertext);
+        FileOutputStream out = new FileOutputStream(CIPHER_PATH + ciphertext);
 
         // do Final
         processFile(cipher, in, out);
         scanner.close();
         out.close();
     }
-    static public void decryptRSA(String[] args)
+    static public void decryptRSA(String[] args, String mode)
     throws java.security.NoSuchAlgorithmException,
     java.security.spec.InvalidKeySpecException,
     javax.crypto.NoSuchPaddingException,
@@ -142,13 +147,13 @@ public class Lab5_2 {
             System.exit(1);
         }
         int idx = 0;
-        String privateKeyFile = args[idx++];
-        String codeFile = args[idx];
+        String privateKeyFile = KEY_PATH + args[idx++];
+        String codeFile = CIPHER_PATH + args[idx];
         PrivateKey pvt = getPrivateKey(privateKeyFile);
-        Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
+        Cipher cipher = Cipher.getInstance(mode);
         cipher.init(Cipher.DECRYPT_MODE, pvt);
-        System.out.println(codeFile);
-        processFile(cipher, codeFile, "data/decoded/duc.dec");
+        String filename = args[idx].replace(".enc", ".dec");
+        processFile(cipher, codeFile, DECODE_PATH + filename);
     }
     
     public static void main(String[] args)
@@ -157,12 +162,12 @@ public class Lab5_2 {
 	    System.err.print("usage: java RSA command params..\n");
 	    System.exit(1);
 		}
-
-	int index = 0;
-	String command = args[index++];
-	String[] params = Arrays.copyOfRange(args, index, args.length);
-    if ( command.equals("encryptRSA")) encryptRSA();
-    else if (command.equals("decryptRSA")) decryptRSA(params);
-    else throw new Exception("Unknown command: " + command);
-    }
+        
+        int index = 0;
+        String command = args[index++];
+        String[] params = Arrays.copyOfRange(args, index, args.length);
+        if ( command.equals("encryptRSA")) encryptRSA(MODE_RSA);
+        else if (command.equals("decryptRSA")) decryptRSA(params, MODE_RSA);
+        else throw new Exception("Unknown command: " + command);
+        }
 }
