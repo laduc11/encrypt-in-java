@@ -112,6 +112,8 @@ public class Lab5_2 {
             doGenkey();
         }
         // get Key
+        long start, end, elapsed_time;
+        start = System.nanoTime();
         pub = getPublicKey(pubFilename);
         // pvt = getPrivateKey(pvtFilename);
 
@@ -130,6 +132,9 @@ public class Lab5_2 {
 
         // do Final
         processFile(cipher, in, out);
+        end = System.nanoTime();
+        elapsed_time = end - start;
+        System.out.println("Elapsed time of Decrypt process is: " + (elapsed_time / 1000000.0) + " ms");
         scanner.close();
         out.close();
     }
@@ -146,6 +151,8 @@ public class Lab5_2 {
             System.err.println("dec Lab05_2.key codetext.");
             System.exit(1);
         }
+        long start, end, elapsed_time;
+        start = System.nanoTime();
         int idx = 0;
         String privateKeyFile = KEY_PATH + args[idx++];
         String codeFile = CIPHER_PATH + args[idx];
@@ -154,6 +161,9 @@ public class Lab5_2 {
         cipher.init(Cipher.DECRYPT_MODE, pvt);
         String filename = args[idx].replace(".enc", ".dec");
         processFile(cipher, codeFile, DECODE_PATH + filename);
+        end = System.nanoTime();
+        elapsed_time = end - start;
+        System.out.println("Elapsed time of Decrypt process is: " + (elapsed_time / 1000000.0) + " ms");
     }
     
     public static void main(String[] args)
