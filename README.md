@@ -16,3 +16,8 @@ Meanwhile, the compiled output files will be generated in the `bin` folder by de
 ## Dependency Management
 
 The `JAVA PROJECTS` view allows you to manage your dependencies. More details can be found [here](https://github.com/microsoft/vscode-java-dependency#manage-dependencies).
+
+## To excute progamme
+- Firstly, cmd to build project: `make build`
+- Secondly, use this cmd to **encrypt**: `make run TARGET='encryptRSA'`
+- Finally, use this cmd to **decrypt**: `make run TARGET='decryptRSA'`

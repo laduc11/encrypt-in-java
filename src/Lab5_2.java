@@ -22,6 +22,7 @@ public class Lab5_2 {
     public static final String PLAINTEXT_PATH = "data/plaintext/";
     public static final String KEY_PATH = "data/key/";
     public static final String MODE_RSA = "RSA/ECB/PKCS1Padding";
+    public static final int RSA_KEY_SIZE = 2048;
 
     static private void processFile(Cipher ci,InputStream in,OutputStream out)
     throws javax.crypto.IllegalBlockSizeException,
@@ -49,7 +50,7 @@ public class Lab5_2 {
     }
     static public PublicKey getPublicKey(String filename)
     throws Exception {
-        byte[] keyBytes = Files.readAllBytes(Paths.get(filename));
+        byte[] keyBytes = Files.readAllBytes(Paths.get(KEY_PATH + filename));
         // String keyString = new String(keyBytes);
 
         // Remove 1st line and last line
@@ -63,7 +64,7 @@ public class Lab5_2 {
 
     static public PrivateKey getPrivateKey(String filename)
     throws Exception {
-        byte[] keyBytes = Files.readAllBytes(Paths.get(filename));
+        byte[] keyBytes = Files.readAllBytes(Paths.get(KEY_PATH + filename));
 
         // System.out.println(Paths.get(filename).toString());
         
@@ -80,7 +81,7 @@ public class Lab5_2 {
     static public void doGenkey() throws java.security.NoSuchAlgorithmException, java.io.IOException {
         // Create RSA key pair
         KeyPairGenerator kpg = KeyPairGenerator.getInstance("RSA");
-        kpg.initialize(2048);
+        kpg.initialize(RSA_KEY_SIZE);
         KeyPair kp = kpg.generateKeyPair();
 
         // Save RSA key to file
